@@ -18,8 +18,12 @@ export default function TasksPage() {
 
   useEffect(() => {
     fetchTasks()
-  }, [])
- page, pageSize }
+  }, [searchQuery, filterStatus, page])
+
+  const fetchTasks = async () => {
+    try {
+      setLoading(true)
+      const params = { page, pageSize }
       if (searchQuery) params.search = searchQuery
       if (filterStatus !== '') params.isCompleted = filterStatus === 'true'
       const data = await apiService.getTasks(params)
@@ -31,28 +35,6 @@ export default function TasksPage() {
       setLoading(false)
     }
   }
-
-  const handleSearchChange = (value) => {
-    setSearchQuery(value)
-    setPage(1)
-  }
-
-  const handleFilterChange = (value) => {
-    setFilterStatus(value)
-    setPage(1)
-  }
-
-  const handlePageChange = (newPage) => {
-    setPage(newPage)
-  }
-
-  useEffect(() => {
-    fetchTasks()
-  }, [searchQuery, filterStatus, page
-
-  useEffect(() => {
-    fetchTasks()
-  }, [searchQuery, filterStatus])
 
   const handleCreateTask = async (formData) => {
     try {
@@ -75,19 +57,40 @@ export default function TasksPage() {
   }
 
   const handleDeleteTask = async (id) => {
-    tr<TaskFilters
-        onSearchChange={handleSearchChange}
-        onFilterChange={handleFilterChange}
-        searchValue={searchQuery}
-        filterValue={filterStatus}
-      />
-      
-      y {
+    try {
       await apiService.deleteTask(id)
       setTasks(tasks.filter(t => t.id !== id))
     } catch (err) {
       setError('Failed to delete task')
     }
+  }
+
+  const handleToggleComplete = async (id, isCompleted) => {
+    try {
+      if (isCompleted) {
+        const updated = await apiService.incompleteTask(id)
+        setTasks(tasks.map(t => t.id === id ? updated : t))
+      } else {
+        const updated = await apiService.completeTask(id)
+        setTasks(tasks.map(t => t.id === id ? updated : t))
+      }
+    } catch (err) {
+      setError('Failed to update task status')
+    }
+  }
+
+  const handleSearchChange = (value) => {
+    setSearchQuery(value)
+    setPage(1)
+  }
+
+  const handleFilterChange = (value) => {
+    setFilterStatus(value)
+    setPage(1)
+  }
+
+  const handlePageChange = (newPage) => {
+    setPage(newPage)
   }
 
   if (loading) return <div>Loading tasks...</div>
@@ -96,6 +99,13 @@ export default function TasksPage() {
     <div className="tasks-page">
       <h1>My Tasks</h1>
       {error && <div style={{ color: '#e74c3c', marginBottom: '1rem' }}>{error}</div>}
+      
+      <TaskFilters
+        onSearchChange={handleSearchChange}
+        onFilterChange={handleFilterChange}
+        searchValue={searchQuery}
+        filterValue={filterStatus}
+      />
       
       {!showForm && !editingId && (
         <button
@@ -161,14 +171,20 @@ export default function TasksPage() {
                 <div>
                   <h3>{task.title}</h3>
                   {task.description && <p>{task.description}</p>}
-                  <span style={{
-                    display: 'inline-block',
-                    padding: '0.25rem 0.75rem',
-                    backgroundColor: task.isCompleted ? '#27ae60' : '#e67e22',
-                    color: 'white',
-                    borderRadius: '4px',
-                    marginTop: '0.5rem'
-                  }}>
+                  <span
+                    style={{
+                      display: 'inline-block',
+                      padding: '0.25rem 0.75rem',
+                      backgroundColor: task.isCompleted ? '#27ae60' : '#e67e22',
+                      color: 'white',
+                      borderRadius: '4px',
+                      marginTop: '0.5rem',
+                      cursor: 'pointer',
+                      userSelect: 'none'
+                    }}
+                    onClick={() => handleToggleComplete(task.id, task.isCompleted)}
+                    title="Click to toggle status"
+                  >
                     {task.isCompleted ? '✓ Completed' : 'Pending'}
                   </span>
                 </div>
@@ -197,14 +213,7 @@ export default function TasksPage() {
                       cursor: 'pointer'
                     }}
                   >
-        
-      
-      <Pagination
-        page={page}
-        pageSize={pageSize}
-        totalCount={totalCount}
-        onPageChange={handlePageChange}
-      />            Delete
+                    Delete
                   </button>
                 </div>
               </div>
@@ -212,6 +221,13 @@ export default function TasksPage() {
           ))}
         </div>
       )}
+      
+      <Pagination
+        page={page}
+        pageSize={pageSize}
+        totalCount={totalCount}
+        onPageChange={handlePageChange}
+      />
     </div>
   )
 }
