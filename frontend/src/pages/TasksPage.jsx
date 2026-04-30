@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { apiService } from '../services/apiService'
 import TaskForm from '../components/TaskForm'
 import TaskFilters from '../components/TaskFilters'
+import Pagination from '../components/Pagination'
 
 export default function TasksPage() {
   const [tasks, setTasks] = useState([])
@@ -11,19 +12,19 @@ export default function TasksPage() {
   const [editingId, setEditingId] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [filterStatus, setFilterStatus] = useState('')
+  const [page, setPage] = useState(1)
+  const [pageSize] = useState(10)
+  const [totalCount, setTotalCount] = useState(0)
 
   useEffect(() => {
     fetchTasks()
   }, [])
-
-  const fetchTasks = async () => {
-    try {
-      setLoading(true)
-      const params = {}
+ page, pageSize }
       if (searchQuery) params.search = searchQuery
       if (filterStatus !== '') params.isCompleted = filterStatus === 'true'
       const data = await apiService.getTasks(params)
       setTasks(data.items || [])
+      setTotalCount(data.totalCount || 0)
     } catch (err) {
       setError('Failed to load tasks')
     } finally {
@@ -33,11 +34,21 @@ export default function TasksPage() {
 
   const handleSearchChange = (value) => {
     setSearchQuery(value)
+    setPage(1)
   }
 
   const handleFilterChange = (value) => {
     setFilterStatus(value)
+    setPage(1)
   }
+
+  const handlePageChange = (newPage) => {
+    setPage(newPage)
+  }
+
+  useEffect(() => {
+    fetchTasks()
+  }, [searchQuery, filterStatus, page
 
   useEffect(() => {
     fetchTasks()
@@ -186,7 +197,14 @@ export default function TasksPage() {
                       cursor: 'pointer'
                     }}
                   >
-                    Delete
+        
+      
+      <Pagination
+        page={page}
+        pageSize={pageSize}
+        totalCount={totalCount}
+        onPageChange={handlePageChange}
+      />            Delete
                   </button>
                 </div>
               </div>
