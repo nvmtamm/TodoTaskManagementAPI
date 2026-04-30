@@ -3,6 +3,7 @@ import { apiService } from '../services/apiService'
 import TaskForm from '../components/TaskForm'
 import TaskFilters from '../components/TaskFilters'
 import Pagination from '../components/Pagination'
+import './TasksPage.css'
 
 export default function TasksPage() {
   const [tasks, setTasks] = useState([])
