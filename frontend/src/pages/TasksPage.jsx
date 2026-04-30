@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { apiService } from '../services/apiService'
 import TaskForm from '../components/TaskForm'
+import TaskFilters from '../components/TaskFilters'
 
 export default function TasksPage() {
   const [tasks, setTasks] = useState([])
@@ -8,6 +9,8 @@ export default function TasksPage() {
   const [error, setError] = useState('')
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState(null)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [filterStatus, setFilterStatus] = useState('')
 
   useEffect(() => {
     fetchTasks()
@@ -16,7 +19,10 @@ export default function TasksPage() {
   const fetchTasks = async () => {
     try {
       setLoading(true)
-      const data = await apiService.getTasks()
+      const params = {}
+      if (searchQuery) params.search = searchQuery
+      if (filterStatus !== '') params.isCompleted = filterStatus === 'true'
+      const data = await apiService.getTasks(params)
       setTasks(data.items || [])
     } catch (err) {
       setError('Failed to load tasks')
@@ -24,6 +30,18 @@ export default function TasksPage() {
       setLoading(false)
     }
   }
+
+  const handleSearchChange = (value) => {
+    setSearchQuery(value)
+  }
+
+  const handleFilterChange = (value) => {
+    setFilterStatus(value)
+  }
+
+  useEffect(() => {
+    fetchTasks()
+  }, [searchQuery, filterStatus])
 
   const handleCreateTask = async (formData) => {
     try {
@@ -46,7 +64,14 @@ export default function TasksPage() {
   }
 
   const handleDeleteTask = async (id) => {
-    try {
+    tr<TaskFilters
+        onSearchChange={handleSearchChange}
+        onFilterChange={handleFilterChange}
+        searchValue={searchQuery}
+        filterValue={filterStatus}
+      />
+      
+      y {
       await apiService.deleteTask(id)
       setTasks(tasks.filter(t => t.id !== id))
     } catch (err) {
