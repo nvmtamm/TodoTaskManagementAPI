@@ -265,31 +265,112 @@ export default function TasksPage() {
                     onClick={() => handleDeleteTask(task.id)}
                     style={{
                       padding: '0.5rem 1rem',
-                      backgroundColor: '#e74c3c',
+          if (loading) return (
+            <div className="tasks-page">
+              <div style={{ padding: '2rem', textAlign: 'center' }}>
+                <div style={{
+                  display: 'inline-block',
+                  width: '40px',
+                  height: '40px',
+                  border: '4px solid #e0e0e0',
+                  borderTop: '4px solid #667eea',
+                  borderRadius: '50%',
+                  animation: 'spin 1s linear infinite'
+                }} />
+                <p style={{ marginTop: '1rem' }}>Loading tasks...</p>
+              </div>
+            </div>
+          )
+
+          return (
+            <div className="tasks-page">
+              <div className="tasks-header">
+                <h1>My Tasks</h1>
+                {!showForm && !editingId && (
+                  <button className="btn-new" onClick={() => setShowForm(true)}>
+                    + New Task
+                  </button>
+                )}
+              </div>
+      
+              {error && <div className="error-banner">{error}</div>}
+      
+              <TaskFilters
+                onSearchChange={handleSearchChange}
+                onFilterChange={handleFilterChange}
+                searchValue={searchQuery}
+                filterValue={filterStatus}
+              />
+      
+              {(showForm || editingId) && (
+                <>
+                  <TaskForm
+                    onSubmit={editingId
+                      ? (data) => handleUpdateTask(editingId, data)
+                      : handleCreateTask
+                    }
+                    initialValues={editingId ? tasks.find(t => t.id === editingId) : null}
+                  />
+                  <button
+                    onClick={() => {
+                      setShowForm(false)
+                      setEditingId(null)
+                    }}
+                    style={{
+                      marginBottom: '1rem',
+                      padding: '0.5rem 1rem',
+                      backgroundColor: '#95a5a6',
                       color: 'white',
                       border: 'none',
                       borderRadius: '4px',
                       cursor: 'pointer',
                       transition: 'background-color 0.3s'
                     }}
-                    onMouseEnter={(e) => e.target.style.backgroundColor = '#c0392b'}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = '#e74c3c'}
+                    onMouseEnter={(e) => e.target.style.backgroundColor = '#7f8c8d'}
+                    onMouseLeave={(e) => e.target.style.backgroundColor = '#95a5a6'}
                   >
-                    Delete
+                    Cancel
                   </button>
+                </>
+              )}
+
+              {tasks.length === 0 ? (
+                <div className="tasks-empty">
+                  <p>No tasks yet. Create one to get started!</p>
                 </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-      
-      <Pagination
-        page={page}
-        pageSize={pageSize}
-        totalCount={totalCount}
-        onPageChange={handlePageChange}
-      />
-    </div>
-  )
-}
+              ) : (
+                <div className="tasks-list">
+                  {tasks.map((task) => (
+                    <div
+                      key={task.id}
+                      className={`task-card ${task.isCompleted ? 'completed' : 'pending'}`}
+                    >
+                      <div className="task-header">
+                        <h3 className="task-title">{task.title}</h3>
+                      </div>
+                      {task.description && <p className="task-description">{task.description}</p>}
+                      <span
+                        className={`task-badge ${task.isCompleted ? 'completed' : 'pending'}`}
+                        onClick={() => handleToggleComplete(task.id, task.isCompleted)}
+                        title="Click to toggle status"
+                      >
+                        {task.isCompleted ? '✓ Completed' : 'Pending'}
+                      </span>
+                      <div className="task-actions">
+                        <button
+                          className="task-btn edit"
+                          onClick={() => setEditingId(task.id)}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="task-btn delete"
+                          onClick={() => handleDeleteTask(task.id)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
