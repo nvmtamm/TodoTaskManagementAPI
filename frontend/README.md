@@ -1,6 +1,6 @@
 # Task Manager Frontend
 
-A modern React-based frontend for the Task Management API, built with Vite and React Router for a seamless user experience.
+A modern React-based frontend for the Task Management API, built with Vite and React Router for a seamless user experience. The current UI pass adds a shared design system, responsive card layouts, and accessibility-focused interactions across the app.
 
 ## Tech Stack
 
@@ -33,6 +33,9 @@ A modern React-based frontend for the Task Management API, built with Vite and R
 - Error messages with helpful feedback
 - Hover effects and interactive elements
 - Smooth animations and transitions
+- Keyboard-friendly focus states and reduced-motion support
+- Card-based task list, modern filter controls, and polished pagination
+- Touch-friendly button sizing on mobile devices
 
 ## Project Structure
 
@@ -56,8 +59,11 @@ frontend/
 │   │   └── TasksPage.css     # Tasks page styling
 │   ├── components/
 │   │   ├── TaskForm.jsx      # Reusable form for create/update
+│   │   ├── TaskForm.css      # Task form styling
 │   │   ├── TaskFilters.jsx   # Search and status filter controls
-│   │   └── Pagination.jsx    # Page navigation component
+│   │   ├── TaskFilters.css   # Filter control styling
+│   │   ├── Pagination.jsx    # Page navigation component
+│   │   └── Pagination.css    # Pagination styling
 │   ├── context/
 │   │   └── AuthContext.jsx   # React context for auth state
 │   ├── services/
@@ -182,23 +188,32 @@ npm run preview  # Preview production build locally
 - Uses ES6+ modern JavaScript
 - Functional components with hooks
 - JSX for component templates
-- Inline styles for quick iteration
-- CSS classes for major components
+- CSS modules are not used; styling is split into plain CSS files per component/page
+- Inline styles are reserved for a few simple loading states
+- Shared design tokens live in `src/index.css`
 
 ## Styling
 
 The project uses plain CSS with:
 - **Color Palette**:
-  - Primary: #667eea (purple)
-  - Secondary: #764ba2 (dark purple)
+  - Primary: #667eea (blue)
+  - Secondary: #764ba2 (violet)
   - Success: #27ae60 (green)
   - Warning: #e67e22 (orange)
   - Danger: #e74c3c (red)
   - Neutral: #95a5a6 (gray)
 
 - **Global Fonts**: System font stack for performance
-- **Animations**: Fade-in on page load, spin on loading
-- **Responsive**: Flex layout for mobile compatibility
+- **Animations**: Fade-in, slide-up, shimmer/pulse, and spinner states
+- **Responsive**: Breakpoints tuned for 768px, 480px, and smaller devices
+- **Accessibility**: Focus-visible states, reduced-motion support, and touch-friendly controls
+
+### Design Tokens
+
+Shared variables live in `src/index.css` and include:
+- `--primary`, `--primary-dark`, `--success`, `--warning`, `--danger`
+- `--dark`, `--gray-light`, `--gray-dark`
+- `--border-radius`, `--transition`
 
 ## Troubleshooting
 
@@ -207,6 +222,12 @@ If you get CORS errors or connection refused:
 1. Ensure backend is running on `https://localhost:7286`
 2. Check `.env` file for correct `VITE_API_URL`
 3. Verify `vite.config.js` proxy configuration
+
+### UI Looks Unstyled
+If the app loads but looks plain:
+1. Make sure `src/index.css` is imported from the app entry point
+2. Check that component CSS files are imported alongside their components
+3. Clear the browser cache and restart the dev server
 
 ### Authentication Problems
 If you can't log in:
