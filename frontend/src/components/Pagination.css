@@ -146,3 +146,69 @@
     font-size: 0.85rem;
   }
 }
+
+/* Focus visible states */
+.pagination-btn:focus-visible,
+.pagination-number:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Button ripple effect on active */
+.pagination-btn:active:not(:disabled),
+.pagination-number:active {
+  transform: scale(0.95);
+}
+
+/* Number button animation on load */
+.pagination-number {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Staggered animation for pagination buttons */
+.pagination-number:nth-child(2) {
+  animation-delay: 0.05s;
+}
+
+.pagination-number:nth-child(3) {
+  animation-delay: 0.1s;
+}
+
+.pagination-number:nth-child(4) {
+  animation-delay: 0.15s;
+}
+
+/* Active state shine animation */
+.pagination-number.active {
+  animation: activePulse 0.4s ease-out;
+}
+
+@keyframes activePulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7);
+  }
+  50% {
+    transform: scale(1);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  }
+}
+
+/* Accessibility: High contrast mode */
+@media (prefers-contrast: more) {
+  .pagination-number {
+    border-width: 2px;
+  }
+
+  .pagination-number.active {
+    border: 2px solid var(--primary);
+  }
+
+  .pagination-btn {
+    border: 1px solid currentColor;
+  }
+}

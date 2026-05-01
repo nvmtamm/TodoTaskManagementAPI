@@ -199,3 +199,77 @@
     justify-content: center;
   }
 }
+
+/* Focus visible states for keyboard navigation */
+.form-group input:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.btn-primary:focus-visible {
+  outline: 2px solid white;
+  outline-offset: -4px;
+}
+
+.auth-footer .link:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Input field animation on error */
+.form-group.error input {
+  animation: shake 0.3s ease-in-out;
+  border-color: var(--danger);
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-3px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(3px);
+  }
+}
+
+/* Input focus ring animation */
+.form-group input:focus {
+  animation: focusRing 0.2s ease-out;
+}
+
+@keyframes focusRing {
+  0% {
+    box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.5);
+  }
+  to {
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+  }
+}
+
+/* Button click animation */
+.btn-primary:active:not(:disabled) {
+  animation: buttonPress 0.1s ease-out;
+}
+
+@keyframes buttonPress {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0.98);
+  }
+}
+
+/* Accessibility: High contrast mode */
+@media (prefers-contrast: more) {
+  .form-group input,
+  .btn-primary {
+    border-width: 2px;
+  }
+  
+  .form-group label {
+    font-weight: 700;
+  }
+}

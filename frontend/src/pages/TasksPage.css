@@ -202,3 +202,75 @@
     width: 100%;
   }
 }
+
+/* Keyboard navigation focus states */
+.task-card:focus-within {
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.2);
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.task-btn:focus-visible {
+  outline: 2px solid white;
+  outline-offset: 2px;
+}
+
+/* Empty state animation */
+.tasks-empty {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Task card completion animation */
+.task-card.completed {
+  animation: completeTask 0.4s ease-out;
+}
+
+@keyframes completeTask {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.95;
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+}
+
+/* Badge pulse animation */
+.task-badge {
+  animation: badgeAppear 0.2s ease-out;
+}
+
+@keyframes badgeAppear {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Button active feedback */
+.task-btn:active {
+  transform: scale(0.98);
+}
+
+/* Accessibility: High contrast mode support */
+@media (prefers-contrast: more) {
+  .task-card {
+    border: 2px solid var(--dark);
+  }
+
+  .task-badge {
+    font-weight: 700;
+  }
+
+  .task-btn {
+    border: 1px solid currentColor;
+  }
+}
