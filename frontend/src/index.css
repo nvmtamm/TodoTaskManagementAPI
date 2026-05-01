@@ -128,3 +128,94 @@ input:focus, select:focus, textarea:focus {
     transform: rotate(360deg);
   }
 }
+
+/* Tablet responsive (≤ 768px) */
+@media (max-width: 768px) {
+  :root {
+    font-size: 15px;
+  }
+
+  h1 {
+    font-size: 1.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    margin-bottom: 1rem;
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.875rem;
+  }
+
+  button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  input, select, textarea {
+    font-size: 16px;
+    padding: 0.625rem 0.875rem;
+  }
+}
+
+/* Mobile responsive (≤ 480px) */
+@media (max-width: 480px) {
+  :root {
+    font-size: 14px;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+    margin-bottom: 0.875rem;
+  }
+
+  h3 {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  p {
+    margin-bottom: 0.75rem;
+  }
+
+  button {
+    padding: 0.625rem 1rem;
+  }
+
+  input, select, textarea {
+    font-size: 16px;
+    padding: 0.625rem 0.75rem;
+    border-radius: 6px;
+  }
+}
+
+/* Extra small devices (≤ 320px) */
+@media (max-width: 320px) {
+  h1 {
+    font-size: 1.25rem;
+  }
+
+  h2 {
+    font-size: 1.1rem;
+  }
+
+  h3 {
+    font-size: 0.95rem;
+  }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
