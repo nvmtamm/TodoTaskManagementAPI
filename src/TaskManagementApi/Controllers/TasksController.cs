@@ -48,8 +48,7 @@ public class TasksController : ControllerBase
         var totalCount = await taskQuery.CountAsync(cancellationToken);
         var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
 
-        var tasks = await taskQuery
-            .OrderByDescending(task => task.CreatedAt)
+        var tasks = await ApplySorting(taskQuery, query)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync(cancellationToken);
@@ -234,6 +233,30 @@ public class TasksController : ControllerBase
         }
 
         return description.Trim();
+    }
+
+    private static IQueryable<TaskItem> ApplySorting(IQueryable<TaskItem> query, TaskQueryParameters parameters)
+    {
+        var descending = !string.Equals(parameters.SortDirection, "asc", StringComparison.OrdinalIgnoreCase);
+
+        return parameters.SortBy?.Trim().ToLowerInvariant() switch
+        {
+            "title" => descending
+                ? query.OrderByDescending(task => task.Title).ThenByDescending(task => task.CreatedAt)
+                : query.OrderBy(task => task.Title).ThenByDescending(task => task.CreatedAt),
+            "updatedat" => descending
+                ? query.OrderByDescending(task => task.UpdatedAt).ThenByDescending(task => task.CreatedAt)
+                : query.OrderBy(task => task.UpdatedAt).ThenByDescending(task => task.CreatedAt),
+            "completedat" => descending
+                ? query.OrderByDescending(task => task.CompletedAt).ThenByDescending(task => task.CreatedAt)
+                : query.OrderBy(task => task.CompletedAt).ThenByDescending(task => task.CreatedAt),
+            "status" => descending
+                ? query.OrderByDescending(task => task.IsCompleted).ThenByDescending(task => task.CreatedAt)
+                : query.OrderBy(task => task.IsCompleted).ThenByDescending(task => task.CreatedAt),
+            _ => descending
+                ? query.OrderByDescending(task => task.CreatedAt)
+                : query.OrderBy(task => task.CreatedAt)
+        };
     }
 
     private static TaskResponse MapToResponse(TaskItem task)
