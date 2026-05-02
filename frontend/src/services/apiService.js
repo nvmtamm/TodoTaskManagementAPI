@@ -1,4 +1,30 @@
-const API_URL = import.meta.env.VITE_API_URL || 'https://localhost:7286'
+const API_URL = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '')
+
+async function readResponseBody(response) {
+  if (response.status === 204) {
+    return null
+  }
+
+  const contentType = response.headers.get('content-type') || ''
+
+  if (!contentType.includes('application/json')) {
+    return null
+  }
+
+  return response.json()
+}
+
+function getErrorMessage(status, body) {
+  if (body?.message) {
+    return body.message
+  }
+
+  if (body?.title) {
+    return body.title
+  }
+
+  return `API request failed with status ${status}`
+}
 
 export const apiService = {
   async request(endpoint, options = {}) {
@@ -17,15 +43,32 @@ export const apiService = {
       headers
     })
 
+    const body = await readResponseBody(response)
+
     if (!response.ok) {
       if (response.status === 401) {
         localStorage.removeItem('token')
         window.location.href = '/login'
       }
-      throw new Error(`API Error: ${response.status}`)
+
+      throw new Error(getErrorMessage(response.status, body))
     }
 
-    return response.json()
+    return body
+  },
+
+  login(data) {
+    return this.request('/api/auth/login', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+  },
+
+  register(data) {
+    return this.request('/api/auth/register', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
   },
 
   getTasks(params = {}) {

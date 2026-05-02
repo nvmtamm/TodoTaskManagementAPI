@@ -1,4 +1,5 @@
 import { createContext, useState, useCallback } from 'react'
+import { apiService } from '../services/apiService'
 
 export const AuthContext = createContext()
 
@@ -10,13 +11,7 @@ export function AuthProvider({ children }) {
   const login = useCallback(async (email, password) => {
     setLoading(true)
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      })
-      if (!response.ok) throw new Error('Login failed')
-      const data = await response.json()
+      const data = await apiService.login({ email, password })
       setToken(data.token)
       localStorage.setItem('token', data.token)
       return data
@@ -28,13 +23,7 @@ export function AuthProvider({ children }) {
   const register = useCallback(async (fullName, email, password) => {
     setLoading(true)
     try {
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fullName, email, password })
-      })
-      if (!response.ok) throw new Error('Registration failed')
-      const data = await response.json()
+      const data = await apiService.register({ fullName, email, password })
       setToken(data.token)
       localStorage.setItem('token', data.token)
       return data

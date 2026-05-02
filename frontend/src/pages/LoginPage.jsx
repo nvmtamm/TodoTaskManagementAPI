@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
+import { apiService } from '../services/apiService'
 import './AuthPage.css'
 
 export default function LoginPage() {
@@ -15,18 +16,7 @@ export default function LoginPage() {
     setLoading(true)
 
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      })
-
-      if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.message || 'Login failed')
-      }
-
-      const data = await response.json()
+      const data = await apiService.login({ email, password })
       localStorage.setItem('token', data.token)
       navigate('/tasks')
     } catch (err) {

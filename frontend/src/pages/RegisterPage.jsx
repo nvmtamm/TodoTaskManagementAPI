@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
+import { apiService } from '../services/apiService'
 import './AuthPage.css'
 
 export default function RegisterPage() {
@@ -16,18 +17,7 @@ export default function RegisterPage() {
     setLoading(true)
 
     try {
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fullName, email, password })
-      })
-
-      if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.message || 'Registration failed')
-      }
-
-      const data = await response.json()
+      const data = await apiService.register({ fullName, email, password })
       localStorage.setItem('token', data.token)
       navigate('/tasks')
     } catch (err) {
