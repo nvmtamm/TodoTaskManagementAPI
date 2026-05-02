@@ -38,9 +38,10 @@ export default function Pagination({ page, pageSize, totalCount, onPageChange })
       >
         Next →
       </button>
-    </div>
+
       <div className="pagination-info">
         Page <span className="page-current">{page}</span> of <span className="page-total">{totalPages}</span>
       </div>
+    </nav>
   )
 }

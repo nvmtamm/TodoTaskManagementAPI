@@ -100,27 +100,3 @@ export default function RegisterPage() {
     </div>
   )
 }
-          />
-        </div>
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            width: '100%',
-            padding: '0.75rem',
-            backgroundColor: '#667eea',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer'
-          }}
-        >
-          {loading ? 'Registering...' : 'Register'}
-        </button>
-      </form>
-      <p style={{ marginTop: '1rem', textAlign: 'center' }}>
-        Already have an account? <Link to="/login">Login</Link>
-      </p>
-    </div>
-  )
-}
