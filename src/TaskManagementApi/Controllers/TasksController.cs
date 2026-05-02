@@ -86,13 +86,19 @@ public class TasksController : ControllerBase
     {
         var userId = GetCurrentUserId();
         var now = DateTimeOffset.UtcNow;
+        var title = NormalizeTitle(request.Title);
+
+        if (title is null)
+        {
+            return BadRequest(new { message = "Task title cannot be empty." });
+        }
 
         var task = new TaskItem
         {
             Id = Guid.NewGuid(),
             UserId = userId,
-            Title = request.Title.Trim(),
-            Description = request.Description?.Trim(),
+            Title = title,
+            Description = NormalizeDescription(request.Description),
             IsCompleted = false,
             CreatedAt = now,
             UpdatedAt = now
@@ -108,6 +114,12 @@ public class TasksController : ControllerBase
     public async Task<IActionResult> UpdateTask(Guid id, UpdateTaskRequest request, CancellationToken cancellationToken)
     {
         var userId = GetCurrentUserId();
+        var title = NormalizeTitle(request.Title);
+
+        if (title is null)
+        {
+            return BadRequest(new { message = "Task title cannot be empty." });
+        }
 
         var task = await _dbContext.Tasks
             .SingleOrDefaultAsync(item => item.Id == id && item.UserId == userId, cancellationToken);
@@ -117,8 +129,8 @@ public class TasksController : ControllerBase
             return NotFound(new { message = "Task not found." });
         }
 
-        task.Title = request.Title.Trim();
-        task.Description = request.Description?.Trim();
+        task.Title = title;
+        task.Description = NormalizeDescription(request.Description);
         task.UpdatedAt = DateTimeOffset.UtcNow;
 
         await _dbContext.SaveChangesAsync(cancellationToken);
@@ -199,6 +211,25 @@ public class TasksController : ControllerBase
         }
 
         return userId;
+    }
+
+    private static string? NormalizeTitle(string? title)
+    {
+        var normalizedTitle = title?.Trim();
+
+        return string.IsNullOrWhiteSpace(normalizedTitle)
+            ? null
+            : normalizedTitle;
+    }
+
+    private static string? NormalizeDescription(string? description)
+    {
+        if (string.IsNullOrWhiteSpace(description))
+        {
+            return null;
+        }
+
+        return description.Trim();
     }
 
     private static TaskResponse MapToResponse(TaskItem task)
