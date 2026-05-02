@@ -46,6 +46,7 @@ public class TasksController : ControllerBase
         }
 
         var totalCount = await taskQuery.CountAsync(cancellationToken);
+        var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
 
         var tasks = await taskQuery
             .OrderByDescending(task => task.CreatedAt)
@@ -58,7 +59,10 @@ public class TasksController : ControllerBase
             Items = tasks.Select(MapToResponse).ToArray(),
             Page = page,
             PageSize = pageSize,
-            TotalCount = totalCount
+            TotalCount = totalCount,
+            TotalPages = totalPages,
+            HasPreviousPage = page > 1,
+            HasNextPage = page < totalPages
         };
 
         return Ok(response);
